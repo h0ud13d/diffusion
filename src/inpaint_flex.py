@@ -32,7 +32,7 @@ def inpaint_given_conditioners_from_dfs_flex(
     m = prep_df(msft_df, start_date, end_date)
     merged = align_on_date([("GOOG", g), ("NVDA", n), ("MSFT", m)])
     all_channels = [c for c in merged.columns if c.startswith("returns_")]
-    train_channels = meta["channels"]  # Only GOOG and MSFT from training
+    train_channels = meta["channels"]  # Only use channels the model was trained on
     
     if target_chan not in all_channels:
         raise ValueError(f"target_chan '{target_chan}' not in {all_channels}")
@@ -61,7 +61,8 @@ def inpaint_given_conditioners_from_dfs_flex(
     for i in known_idx:
         mask[i, :] = 1.0
 
-    model = UNet1D(c_in=C, c_out=C, base=64, tdim=128).to(device)
+    model_cfg = ckpt["model_cfg"]
+    model = UNet1D(**model_cfg).to(device)
     if use_ema and "state_dict_ema" in ckpt:
         model.load_state_dict(ckpt["state_dict_ema"], strict=True)
     else:
@@ -69,44 +70,34 @@ def inpaint_given_conditioners_from_dfs_flex(
         model.load_state_dict(ckpt[sd_key], strict=True)
     diff = GaussianDiffusion1D(model, cfg).to(device)
 
-    # Generate samples from the 2-channel model (GOOG+MSFT)
+    # Generate samples from the trained model (GOOG+MSFT)
     known_t = torch.from_numpy(window_norm).float()[None].to(device)
     mask_t  = torch.from_numpy(mask).float()[None].to(device)
     sample_norm = diff.sample_with_mask(known_t, mask_t, steps=steps)[0].cpu().numpy()
 
-    # Denormalize the predicted GOOG+MSFT data
-    pred_denorm_2ch = zscore_invert(sample_norm.T[:, :, None], mu, sd)[:, :, 0].T
+    # Denormalize the predicted data for trained channels
+    pred_denorm_trained = zscore_invert(sample_norm.T[:, :, None], mu, sd)[:, :, 0].T
     
     # Get actual NVDA data for comparison
     nvda_raw = merged["returns_NVDA"].astype(float).values[-used_L:]
     
     # Create full 3-channel output for visualization
-    pred_denorm_full = np.zeros((len(all_channels), used_L))
+    pred_denorm_full = pred_denorm_trained.copy()
     actual_denorm_full = np.zeros((len(all_channels), used_L))
     
-    # Fill in predicted GOOG+MSFT data
     for i, ch in enumerate(train_channels):
         ch_idx = all_channels.index(ch)
-        pred_denorm_full[ch_idx] = pred_denorm_2ch[i]
-        actual_denorm_full[ch_idx] = actual_denorm[i]
-    
-    # Add actual NVDA data
-    nvda_idx = all_channels.index("returns_NVDA")
-    actual_denorm_full[nvda_idx] = nvda_raw
-    
-    # For prediction, use a simple correlation-based approach as placeholder
-    # This is where you'd implement your actual NVDA prediction logic
-    goog_pred_idx = train_channels.index("returns_GOOG")
-    msft_pred_idx = train_channels.index("returns_MSFT")
-    nvda_pred = 0.5 * pred_denorm_2ch[goog_pred_idx] + 0.5 * pred_denorm_2ch[msft_pred_idx]
-    pred_denorm_full[nvda_idx] = nvda_pred
+        if ch == "returns_NVDA":
+            actual_denorm_full[ch_idx] = nvda_raw
+        else:
+            actual_denorm_full[ch_idx] = actual_denorm[i]
 
     return {
         "channels": all_channels,
         "dates": dates,
         "actual_denorm": actual_denorm_full,
         "pred_denorm": pred_denorm_full,
-        "target_index": nvda_idx,
+        "target_index": all_channels.index(target_chan),
         "known_indices": [all_channels.index(kc) for kc in known_chans],
         "used_L": used_L
     }

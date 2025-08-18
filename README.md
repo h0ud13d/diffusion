@@ -32,7 +32,7 @@ python3 -m src.run
 
 ![NVDA vs MSFT Inpainting Results](imgs/nvda_msft_inpaint.png)
 
-This example shows NVDA prediction during a period with different market conditions than the training data. The model uses inpainting; treating missing NVDA data as "blank channels" and filling them based on observed GOOG+MSFT patterns.
+The example shows NVDA prediction during a period with different market conditions than the training data. The model uses inpainting; treating missing NVDA data as "blank channels" and filling them based on observed GOOG+MSFT patterns.
 
 ## Observations
 

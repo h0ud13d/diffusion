@@ -79,11 +79,13 @@ def train_ddpm_from_dfs(
             best = va_loss
             ema_ckpt = {k: v.clone() for k, v in ema.shadow.items()}
             torch.save({
+                "model_cfg": {"c_in": C, "c_out": C, "base": 64, "tdim": 128, "drop": dropout},
                 "state_dict_ema": ema_ckpt,
                 "state_dict_raw": model.state_dict(),
                 "cfg": _cfg_to_dict(cfg),
                 "meta": meta,
                 "train_range": {"start_date": start_date, "end_date": end_date}
             }, model_path)
+
     print(f"Saved best model to {model_path}")
     return model_path, meta

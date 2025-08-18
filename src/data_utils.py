@@ -84,8 +84,8 @@ def build_windows_from_dfs(goog_df, nvda_df, msft_df, start_date, end_date, L=84
     merged = align_on_date([("GOOG", g), ("NVDA", n), ("MSFT", m)])
 
     channels = [c for c in merged.columns if c.startswith("returns_")]
-    train_channels = [c for c in channels if c != "returns_NVDA"]
-    X_raw = merged[train_channels].astype(float).values      # (N, C) - excluding NVDA
+    train_channels = channels  # Include all channels including NVDA
+    X_raw = merged[train_channels].astype(float).values      # (N, C) - including all channels
     Xnc = X_raw[:, :, None]                            # (N, C, 1)
     mu, sd = zscore_fit(Xnc)
     Xn = zscore_apply(Xnc, mu, sd)[:, :, 0]            # (N, C)
