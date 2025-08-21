@@ -1,4 +1,4 @@
-# Diffusion Models for Stock Analysis
+# Diffusion Models for Stocks
 
 Testing diffusion models for stock prediction. Diffusion models have been successfully implemented in NLP, so I wanted to explore their potency in stock returns. I got inspired by this [arXiv paper](https://arxiv.org/html/2402.06656v1).
 
