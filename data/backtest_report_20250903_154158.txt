@@ -1,0 +1,36 @@
+
+CONFIGURATION:
+- Initial Capital: $1,000,000
+- Max Drawdown Limit: 15.0%
+- Max Position Size: 40.0%
+- Transaction Cost: 10.0 bps
+- Kelly Sizing: True
+- Rebalancing: weekly
+
+PERFORMANCE METRICS:
+- Total Return: -4.16%
+- Annualized Return: -5.54%
+- Sharpe Ratio: -0.176
+- Sortino Ratio: -0.313
+- Win Rate: 53.19%
+
+RISK METRICS:
+- 1-Day VaR (5%): -2.369%
+- 5-Day VaR (5%): -5.298%
+- Expected Shortfall: -4.284%
+- Maximum Drawdown: 26.07%
+- Drawdown Duration: 69 days
+- Volatility (annualized): 25.23%
+- Downside Deviation: 24.07%
+
+STRESS TEST RESULTS:
+- hist_sim_var_95: -0.360%
+- hist_sim_var_99: -0.508%
+- hist_sim_expected_shortfall: -0.467%
+- hist_sim_worst_case: -0.740%
+- param_sim_var_95: -2.484%
+- param_sim_var_99: -3.309%
+- param_sim_expected_shortfall: -2.982%
+
+CALMAR RATIO: -0.213
+TRANSACTION COSTS: $176,727 (17.67% of capital)

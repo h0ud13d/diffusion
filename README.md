@@ -9,25 +9,38 @@ Testing diffusion models for stock prediction. Diffusion models have been succes
    pip install -r requirements.txt
    ```
 
-2. **Optional:** Download full S&P 500 dataset from [Kaggle](https://www.kaggle.com/datasets/camnugent/sandp500) if you want to test this on other stocks.
+2. Download full S&P 500 dataset from [Kaggle](https://www.kaggle.com/datasets/camnugent/sandp500) if you want to test this on other stocks.
    - The repository includes 3 sample stocks (NVIDIA, Microsoft, Google) in the `stocks/` directory
 
 ## Project
 
-This project implements a **1D Diffusion Model** (DDPM) for stock price prediction using cross-stock correlations.
+This project implements a **1D Diffusion Model** (DDPM) for stock return prediction with a comprehensive backtesting and portfolio management system.
 
+### Core Components:
 - **UNet1D**: 1D convolutional neural network with skip connections for time series modeling
 - **Diffusion Process**: Implements DDPM with cosine noise schedule and v-parameterization  
 - **Cross-Stock Prediction**: Uses GOOG+MSFT correlations (tech sector) to infer NVDA behavior
 - **Training Pipeline**: Includes EMA (Exponential Moving Average) and mixed precision training
 
+### Portfolio Management Engine:
+- **Walk-Forward Backtesting**: Cost and risk-aware backtesting with realistic transaction costs
+- **Kelly Sizing**: Optimal position sizing using Kelly criterion with lookback periods
+- **Risk Management**: VaR limits, maximum drawdown constraints, and position size limits
+- **Market Impact Models**: Square-root and linear market impact cost modeling
+- **Monte Carlo Stress Testing**: Portfolio stress testing with multiple scenarios
+- **Interactive Dashboard**: Real-time performance visualization and analytics
+
 ## Usage
 
-Run the model from the root directory:
-```bash
-python3 -m src.run
-```
+1. **Train the model**:
+   ```bash
+   python train.py
+   ```
 
+2. **Run backtesting with interactive dashboard** ([demo](https://github.com/houdinied/diffusion)):
+   ```bash
+   python backtest.py
+   ```
 ## Results
 
 ![NVDA vs MSFT Inpainting Results](imgs/nvda_msft_inpaint.png)

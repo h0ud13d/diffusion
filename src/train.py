@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
-from src.data_utils import build_windows_from_dfs
-from src.model_unet1d import UNet1D
-from src.diffusion import DiffusionConfig, GaussianDiffusion1D, EMA
+from .data_utils import build_windows_from_dfs
+from .model_unet1d import UNet1D
+from .diffusion import DiffusionConfig, GaussianDiffusion1D, EMA
 
 def set_seed(seed=42):
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
@@ -88,4 +88,4 @@ def train_ddpm_from_dfs(
             }, model_path)
 
     print(f"Saved best model to {model_path}")
-    return model_path, meta
+    return model_path, meta, best

@@ -2,9 +2,9 @@
 import numpy as np
 import pandas as pd
 import torch
-from src.data_utils import prep_df, align_on_date, zscore_apply, zscore_invert
-from src.model_unet1d import UNet1D
-from src.diffusion import DiffusionConfig, GaussianDiffusion1D
+from .data_utils import prep_df, align_on_date, zscore_apply, zscore_invert
+from .model_unet1d import UNet1D
+from .diffusion import DiffusionConfig, GaussianDiffusion1D
 
 def _dict_to_cfg(d):
     return DiffusionConfig(timesteps=int(d["timesteps"]),
@@ -14,7 +14,7 @@ def _dict_to_cfg(d):
 @torch.no_grad()
 def inpaint_given_conditioners_from_dfs_flex(
     goog_df, nvda_df, msft_df,
-    known_chans,                # e.g., ["returns_MSFT"]
+    known_chans,                
     target_chan="returns_NVDA",
     start_date=None, end_date=None,
     L=84, steps=250, use_ema=True,
