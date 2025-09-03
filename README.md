@@ -37,7 +37,7 @@ This project implements a **1D Diffusion Model** (DDPM) for stock return predict
    python train.py
    ```
 
-2. **Run backtesting with interactive dashboard** ([demo](https://github.com/houdinied/diffusion)):
+2. **Run backtesting with interactive dashboard**:
    ```bash
    python backtest.py
    ```
